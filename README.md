@@ -1,10 +1,37 @@
-# ropsaisandbox
+ropsaisandbox
+ropsaisandbox is a Streamlit-based AI application designed to leverage various Azure Cognitive Services, including speech-to-text, document translation, and form recognition. This project includes local development, Docker deployment, and Azure Web App hosting.
 
+Features
+Speech-to-Text: Convert audio files to text using Azure Speech Service.
+Document Translation: Translate documents stored in Azure Blob Storage with Azure Document Translator.
+Form Recognition: Extract structured data from forms with Azure Form Recognizer.
+Text Analysis: Leverage Azure Text Analytics for language detection and text insights.
+Prerequisites
+Azure Cognitive Services:
+
+Azure Form Recognizer
+Azure Speech Service
+Azure Translator
+Azure Text Analytics
+Azure Blob Storage:
+
+Two containers: source-documents and translated-documents.
+Python 3.12+
+
+Docker (if deploying with containers).
+
+Installation
 1. Clone the Repository
+bash
+Copy code
+git clone https://github.com/your-username/ropsaisandbox.git
+cd ropsaisandbox
 2. Set Up Environment Variables
+Create a .env file in the project root with the following variables:
 
-Create a .env file in the project root with the following:
-# Azure Keys
+plaintext
+Copy code
+# Azure Cognitive Services
 FORM_RECOGNIZER_ENDPOINT=<Your Azure Form Recognizer Endpoint>
 FORM_RECOGNIZER_KEY=<Your Azure Form Recognizer Key>
 SPEECH_ENDPOINT=<Your Azure Speech Endpoint>
@@ -14,72 +41,82 @@ DOCUMENT_TRANSLATOR_ENDPOINT=<Your Azure Document Translator Endpoint>
 TRANSLATOR_KEY=<Your Azure Translator Key>
 TEXT_ANALYTICS_ENDPOINT=<Your Azure Text Analytics Endpoint>
 TEXT_ANALYTICS_KEY=<Your Azure Text Analytics Key>
-TRANSLATOR_REGION=<Your region>
+TRANSLATOR_REGION=<Your Azure Region>
 
 # Azure Storage
 BLOB_STORAGE_CONNECTION_STRING=<Your Azure Blob Storage Connection String>
 AZURE_SOURCE_CONTAINER_URL=<Your Source Container SAS URL>
 AZURE_TARGET_CONTAINER_URL=<Your Target Container SAS URL>
-
 3. Install Dependencies
-
+bash
+Copy code
 pip install -r requirements.txt
-
-4. Test Locally
-Run the app locally to verify everything is set up:
-
+Local Development
+1. Run the App Locally
+bash
+Copy code
 streamlit run app.py
+Access the application at http://localhost:8501.
 
 Docker Deployment
-
 1. Build the Docker Image
-
-docker build -t streamlit-ai-sandbox .
-
+bash
+Copy code
+docker build -t ropsaisandbox .
 2. Run Locally in Docker
-
-docker run -p 8501:8501 streamlit-ai-sandbox
-
+bash
+Copy code
+docker run -p 8501:8501 ropsaisandbox
 Access the app at http://localhost:8501.
 
-Deploy to Azure
+Azure Deployment
 1. Publish Docker Image to Azure Container Registry (ACR)
-
-# Log in to Azure
+Log in to Azure and ACR
+bash
+Copy code
 az login
-
-# Log in to ACR
 az acr login --name <Your-ACR-Name>
-
-# Tag the Docker image
-
-docker tag streamlit-ai-sandbox <Your-ACR-Name>.azurecr.io/streamlit-ai-sandbox:latest
-
-# Push to ACR
-docker push <Your-ACR-Name>.azurecr.io/streamlit-ai-sandbox:latest
-
+Tag and Push the Docker Image
+bash
+Copy code
+docker tag ropsaisandbox <Your-ACR-Name>.azurecr.io/ropsaisandbox:latest
+docker push <Your-ACR-Name>.azurecr.io/ropsaisandbox:latest
 2. Deploy to Azure Web App
-
-# Create Web App
-az webapp create \
-  --resource-group <Your-Resource-Group> \
-  --plan <Your-App-Service-Plan> \
-  --name <Your-Web-App-Name> \
-  --deployment-container-image-name <Your-ACR-Name>.azurecr.io/streamlit-ai-sandbox:latest
-
-# Configure Docker container
-az webapp config container set \
-  --name <Your-Web-App-Name> \
-  --resource-group <Your-Resource-Group> \
-  --docker-custom-image-name <Your-ACR-Name>.azurecr.io/streamlit-ai-sandbox:latest \
-  --docker-registry-server-url https://<Your-ACR-Name>.azurecr.io \
-  --docker-registry-server-user <Your-ACR-Username> \
+Create the Web App
+bash
+Copy code
+az webapp create `
+  --resource-group <Your-Resource-Group> `
+  --plan <Your-App-Service-Plan> `
+  --name <Your-Web-App-Name> `
+  --deployment-container-image-name <Your-ACR-Name>.azurecr.io/ropsaisandbox:latest
+Configure the Web App
+bash
+Copy code
+az webapp config container set `
+  --name <Your-Web-App-Name> `
+  --resource-group <Your-Resource-Group> `
+  --docker-custom-image-name <Your-ACR-Name>.azurecr.io/ropsaisandbox:latest `
+  --docker-registry-server-url https://<Your-ACR-Name>.azurecr.io `
+  --docker-registry-server-user <Your-ACR-Username> `
   --docker-registry-server-password <Your-ACR-Password>
-
 3. Update Environment Variables in Azure
-Add environment variables in the Azure Portal or use:
+Add Environment Variables
+You can add environment variables directly in the Azure Portal or by using the CLI:
 
-az webapp config appsettings set \
-  --resource-group <Your-Resource-Group> \
-  --name <Your-Web-App-Name> \
-  --settings "FORM_RECOGNIZER_ENDPOINT=<Value>" "FORM_RECOGNIZER_KEY=<Value>" ...
+bash
+Copy code
+az webapp config appsettings set `
+  --resource-group <Your-Resource-Group> `
+  --name <Your-Web-App-Name> `
+  --settings FORM_RECOGNIZER_ENDPOINT=<Value> FORM_RECOGNIZER_KEY=<Value> ...
+Uploading Files
+Audio Files: Upload .wav or .mp3 files for speech transcription.
+Documents: Upload files to the source-documents container in Azure Blob Storage for translation.
+Troubleshooting
+Ensure the .env file is correctly set up for local development.
+Verify your Azure subscription and permissions for the resource group and storage account.
+Check the Azure Web App logs for runtime issues using:
+bash
+Copy code
+az webapp log tail --name <Your-Web-App-Name> --resource-group <Your-Resource-Group>
