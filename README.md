@@ -1,4 +1,5 @@
-ropsaisandbox
+#ropsaisandbox
+
 ropsaisandbox is a Streamlit-based AI application designed to leverage various Azure Cognitive Services, including speech-to-text, document translation, and form recognition. This project includes local development, Docker deployment, and Azure Web App hosting.
 
 Features
@@ -22,15 +23,11 @@ Docker (if deploying with containers).
 
 Installation
 1. Clone the Repository
-bash
-Copy code
 git clone https://github.com/your-username/ropsaisandbox.git
 cd ropsaisandbox
 2. Set Up Environment Variables
 Create a .env file in the project root with the following variables:
 
-plaintext
-Copy code
 # Azure Cognitive Services
 FORM_RECOGNIZER_ENDPOINT=<Your Azure Form Recognizer Endpoint>
 FORM_RECOGNIZER_KEY=<Your Azure Form Recognizer Key>
@@ -48,51 +45,35 @@ BLOB_STORAGE_CONNECTION_STRING=<Your Azure Blob Storage Connection String>
 AZURE_SOURCE_CONTAINER_URL=<Your Source Container SAS URL>
 AZURE_TARGET_CONTAINER_URL=<Your Target Container SAS URL>
 3. Install Dependencies
-bash
-Copy code
 pip install -r requirements.txt
 Local Development
 1. Run the App Locally
-bash
-Copy code
 streamlit run app.py
 Access the application at http://localhost:8501.
 
 Docker Deployment
 1. Build the Docker Image
-bash
-Copy code
 docker build -t ropsaisandbox .
 2. Run Locally in Docker
-bash
-Copy code
 docker run -p 8501:8501 ropsaisandbox
 Access the app at http://localhost:8501.
 
 Azure Deployment
 1. Publish Docker Image to Azure Container Registry (ACR)
 Log in to Azure and ACR
-bash
-Copy code
 az login
 az acr login --name <Your-ACR-Name>
 Tag and Push the Docker Image
-bash
-Copy code
 docker tag ropsaisandbox <Your-ACR-Name>.azurecr.io/ropsaisandbox:latest
 docker push <Your-ACR-Name>.azurecr.io/ropsaisandbox:latest
 2. Deploy to Azure Web App
 Create the Web App
-bash
-Copy code
 az webapp create `
   --resource-group <Your-Resource-Group> `
   --plan <Your-App-Service-Plan> `
   --name <Your-Web-App-Name> `
   --deployment-container-image-name <Your-ACR-Name>.azurecr.io/ropsaisandbox:latest
 Configure the Web App
-bash
-Copy code
 az webapp config container set `
   --name <Your-Web-App-Name> `
   --resource-group <Your-Resource-Group> `
@@ -104,8 +85,6 @@ az webapp config container set `
 Add Environment Variables
 You can add environment variables directly in the Azure Portal or by using the CLI:
 
-bash
-Copy code
 az webapp config appsettings set `
   --resource-group <Your-Resource-Group> `
   --name <Your-Web-App-Name> `
@@ -117,6 +96,4 @@ Troubleshooting
 Ensure the .env file is correctly set up for local development.
 Verify your Azure subscription and permissions for the resource group and storage account.
 Check the Azure Web App logs for runtime issues using:
-bash
-Copy code
 az webapp log tail --name <Your-Web-App-Name> --resource-group <Your-Resource-Group>
