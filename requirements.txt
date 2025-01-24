@@ -1,0 +1,11 @@
+streamlit
+azure-ai-formrecognizer
+azure-cognitiveservices-speech
+python-dotenv
+pydub
+requests
+aiohttp
+Pillow
+python-docx
+azure-ai-translation-document
+azure-storage-blob
